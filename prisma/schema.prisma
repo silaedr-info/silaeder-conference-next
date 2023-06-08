@@ -11,9 +11,44 @@ datasource db {
 }
 
 model User {
-  id Int @id @default(autoincrement())
-
+  id            Int       @id @default(autoincrement())
+  projects      Project[]
   name          String
   email         String
   password_hash String
+  grade         Int
+  isOrganisator Boolean
+  isStudent     Boolean
+  isTechSupport Boolean
+}
+
+model Project {
+  id            Int         @id @default(autoincrement())
+  User          User?       @relation(fields: [userId], references: [id])
+  userId        Int?
+  name          String
+  description   String
+  section       String
+  timeForSpeech Int
+  schedulePos   Int
+  active        Boolean
+  Conference    Conference? @relation(fields: [conferenceId], references: [id])
+  conferenceId  Int?
+  grade         Int
+}
+
+model Conference {
+  id      Int       @id @default(autoincrement())
+  project Project[]
+  break   Break[]
+  name    String
+  start   DateTime
+}
+
+model Break {
+  id           Int         @id @default(autoincrement())
+  time         Int
+  schedulePos  Int
+  Conference   Conference? @relation(fields: [conferenceId], references: [id])
+  conferenceId Int?
 }

@@ -32,14 +32,14 @@ export default function Auth() {
                     label="Я согласен на обработку персональных данных"
                 />
                 <Anchor component="button" size="sm" align="right">
-                    <a href="/forgot-password" style={{textDecoration: 'none', color: "#228be6"}}>
+                    <a href="/forgot-password" style={{textDecoration: 'none', color: "#748FFC"}}>
                         Забыли пароль?
                     </a>
                 </Anchor>
-                <Button fullWidth mt="xl">
+                <Button fullWidth mt="xl" color={"indigo.4"}>
                     Войти
                 </Button>
-                <Button fullWidth mt="xl" variant="outline">
+                <Button fullWidth mt="xl" variant="outline" color={"indigo.4"}>
                     Продолжить как гость
                 </Button>
             </Paper>

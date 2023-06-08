@@ -1,4 +1,20 @@
-import {Grid, Textarea, Text, Title, MultiSelect, Container, Space, Divider, SimpleGrid, TextInput, Autocomplete, Button, FileButton, Checkbox } from '@mantine/core';
+import {
+    Grid,
+    Textarea,
+    Text,
+    Title,
+    MultiSelect,
+    Container,
+    Space,
+    Divider,
+    SimpleGrid,
+    TextInput,
+    Autocomplete,
+    Button,
+    FileButton,
+    Checkbox,
+    Center
+} from '@mantine/core';
 import { useState } from "react";
 import { ProjectCard } from "@/projectCard";
 import { Item, Value } from "@/multiSelect";
@@ -17,14 +33,14 @@ export default function Index() {
         <>
             <Title
                 align="center"
-                sx={(theme) => ({ fontFamily: `Greycliff CF, ${theme.fontFamily}`, fontWeight: 900 })}
+                sx={(theme) => ({ fontFamily: `Greycliff sans-serif, ${theme.fontFamily}`, fontWeight: 900 })}
             >
                 Редактирование проекта
             </Title>
             <Space h="xl" />
             <Grid grow>
                 <Container sx={{width: '70%'}}>
-                    <Title align='center'>*project title*</Title>
+                    <Title align='center'>*Название проекта*</Title>
                     <Text color="dimmed" size="sm" align='center' mt={5}>Заполните информацию о проекте. В описании
                         напишите хотя бы 1 абзац, загрузите картинку проекта. <br />При вводе участиков, начните писать имя
                         участника и начнеться поиск по всем ученикам Силаэдра. <br />Так же, если человек не из Силаэдра или
@@ -45,6 +61,9 @@ export default function Index() {
                         data={['Информатика', 'Биология', 'Программирование', 'Математика', 'История', 'Литература', 'География', 'Обществознание', 'Английский язык']}
                         required
                     />
+                    <TextInput label="Классы участников"
+                               placeholder="Запишите среднее арифметическое классов участников, округлённое по правилам математического округления."
+                               required />
                     <MultiSelect
                         data={users}
                         limit={20}
@@ -58,7 +77,7 @@ export default function Index() {
                     />
                     <Space h='lg' />
                     <Checkbox
-                        label="Человека нету в списке"
+                        label="Человека нет в списке"
                         onChange={(e) => {setDisabled(!e.target.checked); }}
                     />
                     <TextInput label="ФИО" placeholder="Напишите ФИО недостающих через запятую" disabled={disabled} required />
@@ -69,8 +88,6 @@ export default function Index() {
                         </FileButton>
                         <Button variant="default">Просмотреть презентацию</Button>
                     </Button.Group>
-
-
 
                 </Container>
                 <Divider orientation="vertical"/>

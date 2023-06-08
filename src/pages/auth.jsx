@@ -11,8 +11,6 @@ import {
     Space,
 } from '@mantine/core';
 
-
-
 export default function Auth() {
     return (
         <Container size={420} my={40}>

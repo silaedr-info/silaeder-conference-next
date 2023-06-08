@@ -34,17 +34,21 @@ model Project {
   active        Boolean
   Conference    Conference? @relation(fields: [conferenceId], references: [id])
   conferenceId  Int?
+  grade         Int
 }
 
 model Conference {
   id      Int       @id @default(autoincrement())
   project Project[]
+  break   Break[]
   name    String
   start   DateTime
 }
 
 model Break {
-  id          Int @id @default(autoincrement())
-  time        Int
-  schedulePos Int
+  id           Int         @id @default(autoincrement())
+  time         Int
+  schedulePos  Int
+  Conference   Conference? @relation(fields: [conferenceId], references: [id])
+  conferenceId Int?
 }

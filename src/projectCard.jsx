@@ -15,7 +15,7 @@ export function ProjectCard({name, section, description, editFunc, projectId}) {
             </Text>
 
             <Group align='right' sx={{width: '25%'}}>
-                <Button variant="light" color="blue" mt="md" radius="md" onClick={() => {editFunc(projectId)}}>
+                <Button variant="light" color="indigo.4" mt="md" radius="md" onClick={() => {editFunc(projectId)}}>
                     Редактировать проект
                 </Button>
             </Group>

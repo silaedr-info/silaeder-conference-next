@@ -11,10 +11,11 @@ import {
     rem,
     ActionIcon,
     useMantineColorScheme,
-    useMantineTheme
+    useMantineTheme, PasswordInput, Anchor, Button, Modal, Title, Center
 } from '@mantine/core';
 import { useDisclosure } from '@mantine/hooks';
 import { IconLogout, IconArrowsLeftRight, IconSun, IconMoonStars } from "@tabler/icons-react";
+import {useState} from "react";
 
 const useStyles = createStyles((theme) => ({
     dropdown: {
@@ -72,6 +73,7 @@ const useStyles = createStyles((theme) => ({
 }));
 
 export function HeaderResponsive({ links }) {
+    const [anotherOpened, changeOpened] = useState(false);
     const { colorScheme, toggleColorScheme } = useMantineColorScheme();
     const theme = useMantineTheme();
     const { classes } = useStyles();
@@ -89,27 +91,53 @@ export function HeaderResponsive({ links }) {
         )
     })
     return (
-        <Header height={rem(60)} mb={120}>
+        <Header height={rem(60)} mb={100}>
+            <Modal opened={anotherOpened} onClose={() => { changeOpened(false) }} title="" centered>
+                <Container size={350} my={10}>
+                    <Title
+                        align="center"
+                        sx={(theme) => ({ fontFamily: `Greycliff CF, ${theme.fontFamily}`, fontWeight: 900 })}
+                    >
+                        Смена пароля
+                    </Title>
+
+                    <PasswordInput label="Старый пароль" placeholder="Your last password" required mt="md" />
+                    <PasswordInput label="Новый пароль" placeholder="Your new password" required mt="md" />
+                    <PasswordInput label="Подтвердите пароль" placeholder="Your new password" required mt="md" />
+                    <Group position="apart" mt="lg">
+                        <Anchor component="button" size="sm" color={"indigo.4"}>
+                            Забыли пароль?
+                        </Anchor>
+                    </Group>
+                    <Button fullWidth mt="xl" color={"indigo.4"}>
+                        Заменить
+                    </Button>
+                </Container>
+            </Modal>
             <Container className={classes.inner} fluid>
                 <Group>
                     <Burger opened={opened} onClick={toggle} className={classes.burger} size="sm" />
                     <h3>Silaeder Conference</h3>
                 </Group>
 
-                <Group>
-                    <Group spacing={5} className={classes.links}>
+
+                <Center className={classes.links} >
+                    <Group spacing={60}>
                         {linkItems}
                     </Group>
+                </Center>
+
+                <Group>
 
                     <Menu shadow="md" width={200} transitionProps={{ transition: 'pop', duration: 250 }}>
-                        <Group position="center" my="xl">
+                        <Group my="xl">
                             <ActionIcon
                                 onClick={() => toggleColorScheme()}
                                 size="lg"
                                 sx={(theme) => ({
                                     backgroundColor:
                                         theme.colorScheme === 'dark' ? theme.colors.dark[6] : theme.colors.gray[0],
-                                    color: theme.colors.blue[6],
+                                    color: theme.colors.indigo[4],
                                 })}
                             >
                                 {theme.colorScheme === 'dark' && <IconSun size="1.2rem" />}
@@ -121,7 +149,7 @@ export function HeaderResponsive({ links }) {
                         </Menu.Target>
                         <Menu.Dropdown>
                             <Menu.Label>*Username*</Menu.Label>
-                            <Menu.Item icon={<IconArrowsLeftRight size={14} />}>Сменить пароль</Menu.Item>
+                            <Menu.Item icon={<IconArrowsLeftRight size={14} />} onClick={() => { changeOpened(true) }}>Сменить пароль</Menu.Item>
                             <Menu.Item color="red" icon={<IconLogout size={14} />}>Выйти</Menu.Item>
                         </Menu.Dropdown>
                     </Menu>

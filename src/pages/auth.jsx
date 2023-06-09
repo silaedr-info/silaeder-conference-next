@@ -29,6 +29,7 @@ export default function Auth() {
                 <PasswordInput label="Пароль" placeholder="Password" required mt="md" />
                 <Space h="lg" />
                 <Checkbox
+                    required
                     label="Я согласен на обработку персональных данных"
                 />
                 <Anchor component="button" size="sm" align="right">

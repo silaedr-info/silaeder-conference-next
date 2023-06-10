@@ -28,12 +28,18 @@ dependencies:
   '@tabler/icons-react':
     specifier: ^2.22.0
     version: 2.22.0(react@18.2.0)
+  cookies-next:
+    specifier: ^2.1.1
+    version: 2.1.1
   eslint:
     specifier: 8.42.0
     version: 8.42.0
   eslint-config-next:
     specifier: 13.4.4
     version: 13.4.4(eslint@8.42.0)(typescript@5.1.3)
+  jsonwebtoken:
+    specifier: ^9.0.0
+    version: 9.0.0
   next:
     specifier: 13.4.4
     version: 13.4.4(react-dom@18.2.0)(react@18.2.0)
@@ -43,6 +49,9 @@ dependencies:
   react-dom:
     specifier: 18.2.0
     version: 18.2.0(react@18.2.0)
+  request-ip:
+    specifier: ^3.3.0
+    version: 3.3.0
   unisender-api:
     specifier: ^1.1.1
     version: 1.1.1
@@ -680,8 +689,16 @@ packages:
     resolution: {integrity: sha512-lOsGHqRPIKNARMWHHFkUUJH78C8ptQmUcDnumFBUI4YLRKFouKa7uAZL3ZfuH0HjDpOhsnWqUYZ7FhMCLcGpAQ==}
     dev: false
 
+  /@types/cookie@0.4.1:
+    resolution: {integrity: sha512-XW/Aa8APYr6jSVVA1y/DEIZX0/GMKLEVekNG727R8cs56ahETkRAy/3DR7+fJyh7oUgGwNQaRfXCun0+KbWY7Q==}
+    dev: false
+
   /@types/json5@0.0.29:
     resolution: {integrity: sha512-dRLjCWHYg4oaA77cxO64oO+7JwCwnIzkZPdrrC71jQmQtlhM556pwKo5bUzqvZndkVbeFLIIi+9TC40JNF5hNQ==}
+    dev: false
+
+  /@types/node@16.18.35:
+    resolution: {integrity: sha512-yqU2Rf94HFZqgHf6Tuyc/IqVD0l3U91KjvypSr1GtJKyrnl6L/kfnxVqN4QOwcF5Zx9tO/HKK+fozGr5AtqA+g==}
     dev: false
 
   /@types/parse-json@4.0.0:
@@ -934,6 +951,10 @@ packages:
       fill-range: 7.0.1
     dev: false
 
+  /buffer-equal-constant-time@1.0.1:
+    resolution: {integrity: sha512-zRpUiDwd/xk6ADqPMATG8vc9VPrkck7T07OIx0gnjmJAnHnTVXNQG3vfvWNuiZIkwu9KrKdA1iJKfsfTVxE6NA==}
+    dev: false
+
   /buffer-from@0.1.2:
     resolution: {integrity: sha512-RiWIenusJsmI2KcvqQABB83tLxCByE3upSP8QU3rJDMVFGPWLvPQJt/O1Su9moRWeH7d+Q2HYb68f6+v+tw2vg==}
     dev: false
@@ -1028,6 +1049,19 @@ packages:
 
   /convert-source-map@1.9.0:
     resolution: {integrity: sha512-ASFBup0Mz1uyiIjANan1jzLQami9z1PoYSZCiiYW2FczPbenXc45FZdBZLzOT+r6+iciuEModtmCti+hjaAk0A==}
+    dev: false
+
+  /cookie@0.4.2:
+    resolution: {integrity: sha512-aSWTXFzaKWkvHO1Ny/s+ePFpvKsPnjc551iI41v3ny/ow6tBG5Vd+FuqGNhh1LxOmVzOlGUriIlOaokOvhaStA==}
+    engines: {node: '>= 0.6'}
+    dev: false
+
+  /cookies-next@2.1.1:
+    resolution: {integrity: sha512-AZGZPdL1hU3jCjN2UMJTGhLOYzNUN9Gm+v8BdptYIHUdwz397Et1p+sZRfvAl8pKnnmMdX2Pk9xDRKCGBum6GA==}
+    dependencies:
+      '@types/cookie': 0.4.1
+      '@types/node': 16.18.35
+      cookie: 0.4.2
     dev: false
 
   /core-util-is@1.0.3:
@@ -1208,6 +1242,12 @@ packages:
     resolution: {integrity: sha512-asLFVfWWtJ90ZyOUHMqk7/S2w2guQKxUI2itj3d92ADHhxUSbCMGi1f1cBcJ7xM1To+pE/Khbwo1yuNbMEPKeA==}
     dependencies:
       readable-stream: 2.3.8
+    dev: false
+
+  /ecdsa-sig-formatter@1.0.11:
+    resolution: {integrity: sha512-nagl3RYrbNv6kQkeJIpt6NJZy8twLB/2vtz6yN9Z4vRKHN4/QZJIEbqohALSgwKdnksuY3k5Addp5lg8sVoVcQ==}
+    dependencies:
+      safe-buffer: 5.1.2
     dev: false
 
   /emoji-regex@9.2.2:
@@ -2243,12 +2283,37 @@ packages:
       minimist: 1.2.8
     dev: false
 
+  /jsonwebtoken@9.0.0:
+    resolution: {integrity: sha512-tuGfYXxkQGDPnLJ7SibiQgVgeDgfbPq2k2ICcbgqW8WxWLBAxKQM/ZCu/IT8SOSwmaYl4dpTFCW5xZv7YbbWUw==}
+    engines: {node: '>=12', npm: '>=6'}
+    dependencies:
+      jws: 3.2.2
+      lodash: 4.17.21
+      ms: 2.1.3
+      semver: 7.5.1
+    dev: false
+
   /jsx-ast-utils@3.3.3:
     resolution: {integrity: sha512-fYQHZTZ8jSfmWZ0iyzfwiU4WDX4HpHbMCZ3gPlWYiCl3BoeOTsqKBqnTVfH2rYT7eP5c3sVbeSPHnnJOaTrWiw==}
     engines: {node: '>=4.0'}
     dependencies:
       array-includes: 3.1.6
       object.assign: 4.1.4
+    dev: false
+
+  /jwa@1.4.1:
+    resolution: {integrity: sha512-qiLX/xhEEFKUAJ6FiBMbes3w9ATzyk5W7Hvzpa/SLYdxNtng+gcurvrI7TbACjIXlsJyr05/S1oUhZrc63evQA==}
+    dependencies:
+      buffer-equal-constant-time: 1.0.1
+      ecdsa-sig-formatter: 1.0.11
+      safe-buffer: 5.1.2
+    dev: false
+
+  /jws@3.2.2:
+    resolution: {integrity: sha512-YHlZCB6lMTllWDtSPHz/ZXTsi8S00usEV6v1tjq8tOUZzw7DpSDWVXjXDre6ed1w/pd495ODpHZYSdkRTsa0HA==}
+    dependencies:
+      jwa: 1.4.1
+      safe-buffer: 5.1.2
     dev: false
 
   /klona@2.0.6:
@@ -2287,6 +2352,10 @@ packages:
 
   /lodash.merge@4.6.2:
     resolution: {integrity: sha512-0KpjqXRVvrYyCsX1swR/XTK0va6VQkQM6MNo7PqW77ByjAhoARA8EfrP1N4+KlKj8YS0ZUCtRT/YUuhyYDujIQ==}
+    dev: false
+
+  /lodash@4.17.21:
+    resolution: {integrity: sha512-v2kDEe57lecTulaDIuNTPy3Ry4gLGJ6Z1O3vE1krgXZNrsQ+LFTGHVxVjcXPs17LhbZVGedAJv8XZ1tvj5FvSg==}
     dev: false
 
   /loose-envify@1.4.0:
@@ -2777,6 +2846,10 @@ packages:
       call-bind: 1.0.2
       define-properties: 1.2.0
       functions-have-names: 1.2.3
+    dev: false
+
+  /request-ip@3.3.0:
+    resolution: {integrity: sha512-cA6Xh6e0fDBBBwH77SLJaJPBmD3nWVAcF9/XAcsrIHdjhFzFiB5aNQFytdjCGPezU3ROwrR11IddKAM08vohxA==}
     dev: false
 
   /resolve-from@4.0.0:

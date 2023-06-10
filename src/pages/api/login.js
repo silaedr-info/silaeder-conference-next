@@ -1,0 +1,31 @@
+import {PrismaClient} from '@prisma/client'
+import jwt from 'jsonwebtoken'
+import requestIp from 'request-ip';
+
+const prisma = new PrismaClient()
+
+export default async function handler(req, res) {
+    if (req.method === "POST") {
+        const {email, password_hash} = req.body;
+        const ip = requestIp.getClientIp(req);
+
+        const user = await prisma.user.findMany({
+            where: {
+                email: email,
+                password_hash: password_hash
+            }
+        });
+
+        if (user.length !== 0) {
+            const token = jwt.sign({ip: ip, user_id: user[0].id}, password_hash);
+
+            res.status(200).json({
+                token: token
+            });
+        } else {
+            res.status(200).json({
+                error: "not found"
+            });
+        }
+    }
+}

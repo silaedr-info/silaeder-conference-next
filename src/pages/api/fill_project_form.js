@@ -1,9 +1,8 @@
 import { PrismaClient } from "@prisma/client";
 import { getCookie } from "cookies-next";
+import jwt from 'jsonwebtoken';
 
-const jwt = require('jsonwebtoken');
-const prisma = new PrismaClient
-
+const prisma = new PrismaClient();
 
 export default async function fill_project_form(req, res) {
     if (req.method === "post") {

@@ -10,7 +10,7 @@ function getRandomInt(min, max) {
 
 export default async function handler(req, res) {
     if (req.method === "POST") {
-        const {email} = req.body;
+        const {email} = JSON.parse(req.body);
 
         const user = await prisma.user.findMany({
             where: {

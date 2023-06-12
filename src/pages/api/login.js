@@ -1,13 +1,15 @@
-import {PrismaClient} from '@prisma/client'
-import jwt from 'jsonwebtoken'
+import {PrismaClient} from '@prisma/client';
+import jwt from 'jsonwebtoken';
 import requestIp from 'request-ip';
 
 const prisma = new PrismaClient()
 
 export default async function handler(req, res) {
     if (req.method === "POST") {
-        const {email, password_hash} = req.body;
+        const {email, password_hash} = JSON.parse(req.body);
         const ip = requestIp.getClientIp(req);
+
+        console.log(req.body)
 
         const user = await prisma.user.findMany({
             where: {
@@ -16,7 +18,7 @@ export default async function handler(req, res) {
             }
         });
 
-        if (user.length !== 0) {
+        if ((user.length !== 0) && (user[0].password_hash === password_hash)) {
             const token = jwt.sign({ip: ip, user_id: user[0].id}, password_hash);
 
             res.status(200).json({

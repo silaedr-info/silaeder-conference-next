@@ -15,13 +15,11 @@ import {
     Checkbox,
     Center
 } from '@mantine/core';
-import { useState } from "react";
+import {useEffect, useState} from "react";
 import { ProjectCard } from "@/projectCard";
 import { Item, Value } from "@/multiSelect";
 
-
 export default function Index() {
-
     const users = [
         "Таран Максим Владимирович",
         "Белозеров Иван Максимович",

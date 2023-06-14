@@ -79,9 +79,9 @@ const Index = () => {
             }
         ).then()
     }
-
     return (
         <>
+            {authorized ? <>
             <Title
                 align="center"
                 sx={(theme) => ({ fontFamily: `Greycliff sans-serif, ${theme.fontFamily}`, fontWeight: 900 })}
@@ -166,7 +166,15 @@ const Index = () => {
                     </SimpleGrid>
                 </Container>
             </Grid>
-        </>
+            </> : <>
+                <Flex w="100%" h="100%" mx="auto" align="center" justify="center">
+                    <Flex align="center" direction="column">
+                        <Loader mb="10px" size="xl" variant="bars" />
+                        <Text size="xl">Пожалуйста подождите</Text>
+                    </Flex>
+                </Flex>
+            </> }
+            </>
     );
 }
 

@@ -51,7 +51,7 @@ export function FooterCentered() {
                         </a>
                     </ActionIcon>
                     <ActionIcon size="lg" variant="default" radius="xl">
-                        <a href='https://t.me/tmasikt' style={{color: "black"}} target="_blank">
+                        <a href='https://t.me/vlppz' style={{color: "black"}} target="_blank">
                             <IconBrandTelegram size="1.05rem" stroke={1.5} />
                         </a>
                     </ActionIcon>

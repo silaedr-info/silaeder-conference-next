@@ -13,44 +13,72 @@ import {
     Button,
     FileButton,
     Checkbox,
-    Center, Flex
+    NumberInput,
+    Select,
 } from '@mantine/core';
+import { useForm } from '@mantine/form'
 import {useEffect, useState} from "react";
 import { ProjectCard } from "@/projectCard";
 import { Item, Value } from "@/multiSelect";
-import {getCookie, hasCookie} from "cookies-next";
-import { Loader } from '@mantine/core';
-import MD5 from "crypto-js/md5";
 
-export default function Index() {
-    const users = [
-        "Таран Максим Владимирович",
-        "Белозеров Иван Максимович",
-    ];
+const Index = () => {
+    const [ users, setUsers ] = useState([]);
+    const [ conferences, setConferences ] = useState([]);
+    const [ tutors, setTutor ] = useState([]);
+
+    const form = useForm({
+        initialValues: {
+
+        }
+    });
+
+    useEffect(() => {
+        const fetchingConferences = async () => {
+            const x = await fetch('/api/getAllConferences')
+            return x.json()
+        }
+        const fetchingTutors = async () => {
+            const x = await fetch('/api/getAllTutors')
+            return x.json()
+        }
+        const fetching = async () => {
+            const x = await fetch('/api/getAllUsers')
+            return x.json()
+        }
+        fetching().then((data) => {
+            setUsers(data.data);
+        })
+        fetchingConferences().then((data) => {
+            setConferences(data.data)
+        })
+        fetchingTutors().then((data) => {
+            setTutor(data.data)
+        })
+    }, []);
     const [ currentProject, setCurrentProject ] = useState(0) // replace zero with first project of this user
     const [ disabled, setDisabled ] = useState(true);
 
-    const [ authorized, setAuthorized ] = useState(false);
-
-    useEffect(async () => {
-        if (hasCookie("auth_token")) {
-            let res = await fetch("/api/check_login", {
-                method: "post",
-                body: JSON.stringify({
-                    токен: getCookie("auth_token")
-                })
-            });
-
-            let json = await res.json();
-
-            if (json.status === "ok") {
-                setAuthorized(true);
-            }
-        } else {
-            window.location.href = "/auth"
+    const addProject = (value) => {
+        const body = {
+            name: value.name,
+            description: value.description,
+            section: value.section,
+            grade: value.grade,
+            time_for_speech: 5,
+            conference_id: value.conference,
+            tutor_id: value.tutor,
+            members: value.users,
         }
-    }, [])
-
+        const x = fetch(
+            '/api/createProject', {
+                method: 'POST',
+                headers: {
+                    "Content-Type": 'application/json'
+                },
+                body: JSON.stringify(body)
+            }
+        ).then()
+    }
     return (
         <>
             {authorized ? <>
@@ -71,21 +99,32 @@ export default function Index() {
                         При выборе научного руководителя, просто напишите его ФИО
                     </Text>
                     <Space h="xl" />
-                    <TextInput label="Название проекта" placeholder="Silaeder Conference" required />
+                    <form onSubmit={form.onSubmit(addProject)}>
+                    <TextInput label="Название проекта" placeholder="Silaeder Conference" {...form.getInputProps('name')} required />
                     <Textarea
                         placeholder="Напишите хотя бы один абзац. Например: Наш проект предостовляет совокупность сервисов, позволяющих быстро и без задержек показывать презентации и организовывать расписание."
                         label="Описание"
                         withAsterisk
+                        {...form.getInputProps('description')}
                     />
-                    <TextInput label="Научный руководитель" placeholder="Старунова Ольга Александровна" required />
+                    <Select data={tutors} label="Научный руководитель" placeholder="Старунова Ольга Александровна" {...form.getInputProps('tutor')} required />
                     <Autocomplete
                         label="Секция"
                         placeholder="Начните писать"
                         data={['Информатика', 'Биология', 'Программирование', 'Математика', 'История', 'Литература', 'География', 'Обществознание', 'Английский язык']}
+                        {...form.getInputProps('section')}
                         required
                     />
-                    <TextInput label="Классы участников"
+                    <Select
+                        label="Конференция"
+                        placeholder="Выберите конференцию, на которую вы хотите загрузить проект"
+                        data={conferences}
+                        {...form.getInputProps('conference')}
+                        required
+                    />
+                    <NumberInput label="Класс участников"
                                placeholder="Запишите среднее арифметическое классов участников, округлённое по правилам математического округления."
+                               {...form.getInputProps('grade')}
                                required />
                     <MultiSelect
                         data={users}
@@ -96,6 +135,7 @@ export default function Index() {
                         defaultValue={['US', 'FI']}
                         placeholder="Начните писать ФИО"
                         label="Участники"
+                        {...form.getInputProps('users')}
                         required
                     />
                     <Space h='lg' />
@@ -103,14 +143,18 @@ export default function Index() {
                         label="Человека нет в списке"
                         onChange={(e) => {setDisabled(!e.target.checked); }}
                     />
-                    <TextInput label="ФИО" placeholder="Напишите ФИО недостающих через запятую" disabled={disabled} required />
+                    <TextInput label="ФИО" placeholder="Напишите ФИО недостающих через запятую" disabled={disabled}
+                               {...form.getInputProps('additional_users')}
+                    />
                     <Space h="lg" />
                     <Button.Group>
                         <FileButton accept="application/vnd.ms-powerpoint,application/pdf" onChange={(file) => {}}>
-                            {(props) => <Button variant="default" {...props}>Загрузить презентацию</Button>}
+                            {(props) => <Button     variant="default" {...props}>Загрузить презентацию</Button>}
                         </FileButton>
                         <Button variant="default">Просмотреть презентацию</Button>
                     </Button.Group>
+                    <Button type="submit">Сохранить</Button>
+                    </form>
 
                 </Container>
                 <Divider orientation="vertical"/>
@@ -133,3 +177,5 @@ export default function Index() {
             </>
     );
 }
+
+export default Index

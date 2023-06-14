@@ -1,6 +1,3 @@
-// This is your Prisma schema file,
-// learn more about it in the docs: https://pris.ly/d/prisma-schema
-
 generator client {
   provider = "prisma-client-js"
 }
@@ -11,44 +8,52 @@ datasource db {
 }
 
 model User {
-  id            Int       @id @default(autoincrement())
-  projects      Project[]
+  id            Int               @id @default(autoincrement())
   name          String
   email         String
   password_hash String
-  grade         Int
   isOrganisator Boolean
   isStudent     Boolean
-  isTechSupport Boolean
+  isTutor       Boolean
+  projects      ProjectsOnUsers[]
 }
 
 model Project {
-  id            Int         @id @default(autoincrement())
-  User          User?       @relation(fields: [userId], references: [id])
-  userId        Int?
+  id            Int               @id @default(autoincrement())
   name          String
   description   String
   section       String
   timeForSpeech Int
   schedulePos   Int
   active        Boolean
-  Conference    Conference? @relation(fields: [conferenceId], references: [id])
   conferenceId  Int?
   grade         Int
+  isHidden      Boolean
+  Conference    Conference?       @relation(fields: [conferenceId], references: [id])
+  users         ProjectsOnUsers[]
+}
+
+model ProjectsOnUsers {
+  project   Project @relation(fields: [projectId], references: [id])
+  projectId Int
+  user      User    @relation(fields: [userId], references: [id])
+  userId    Int
+
+  @@id([projectId, userId])
 }
 
 model Conference {
   id      Int       @id @default(autoincrement())
-  project Project[]
-  break   Break[]
   name    String
   start   DateTime
+  break   Break[]
+  project Project[]
 }
 
 model Break {
   id           Int         @id @default(autoincrement())
   time         Int
   schedulePos  Int
-  Conference   Conference? @relation(fields: [conferenceId], references: [id])
   conferenceId Int?
+  Conference   Conference? @relation(fields: [conferenceId], references: [id])
 }

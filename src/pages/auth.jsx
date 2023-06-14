@@ -41,6 +41,8 @@ export default function Auth() {
 
         if ((typeof token === "string") && (token !== "")) {
             setCookie("auth_token", token, {maxAge: 31536000});
+
+            window.location.href = "/";
         }
     }
 

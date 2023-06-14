@@ -9,8 +9,6 @@ export default async function handler(req, res) {
         const {email, password_hash} = JSON.parse(req.body);
         const ip = requestIp.getClientIp(req);
 
-        console.log(req.body)
-
         const user = await prisma.user.findMany({
             where: {
                 email: email,

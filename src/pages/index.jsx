@@ -13,11 +13,14 @@ import {
     Button,
     FileButton,
     Checkbox,
-    Center
+    Center, Flex
 } from '@mantine/core';
 import {useEffect, useState} from "react";
 import { ProjectCard } from "@/projectCard";
 import { Item, Value } from "@/multiSelect";
+import {getCookie, hasCookie} from "cookies-next";
+import { Loader } from '@mantine/core';
+import MD5 from "crypto-js/md5";
 
 export default function Index() {
     const users = [
@@ -27,8 +30,30 @@ export default function Index() {
     const [ currentProject, setCurrentProject ] = useState(0) // replace zero with first project of this user
     const [ disabled, setDisabled ] = useState(true);
 
+    const [ authorized, setAuthorized ] = useState(false);
+
+    useEffect(async () => {
+        if (hasCookie("auth_token")) {
+            let res = await fetch("/api/check_login", {
+                method: "post",
+                body: JSON.stringify({
+                    токен: getCookie("auth_token")
+                })
+            });
+
+            let json = await res.json();
+
+            if (json.status === "ok") {
+                setAuthorized(true);
+            }
+        } else {
+            window.location.href = "/auth"
+        }
+    }, [])
+
     return (
         <>
+            {authorized ? <>
             <Title
                 align="center"
                 sx={(theme) => ({ fontFamily: `Greycliff sans-serif, ${theme.fontFamily}`, fontWeight: 900 })}
@@ -97,6 +122,14 @@ export default function Index() {
                     </SimpleGrid>
                 </Container>
             </Grid>
-        </>
+            </> : <>
+                <Flex w="100%" h="100%" mx="auto" align="center" justify="center">
+                    <Flex align="center" direction="column">
+                        <Loader mb="10px" size="xl" variant="bars" />
+                        <Text size="xl">Пожалуйста подождите</Text>
+                    </Flex>
+                </Flex>
+            </> }
+            </>
     );
 }

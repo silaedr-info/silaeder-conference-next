@@ -28,7 +28,7 @@ model Project {
   active        Boolean
   conferenceId  Int?
   grade         Int
-  isHidden      Boolean
+  isHidden      Boolean           @default(false)
   Conference    Conference?       @relation(fields: [conferenceId], references: [id])
   users         ProjectsOnUsers[]
 }

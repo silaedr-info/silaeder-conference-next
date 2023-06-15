@@ -18,24 +18,42 @@ export default async function CreateProject(req, res) {
         );
         const users = [
         ]
-
-        members.forEach((e) => {
-            users.push({
-                user: {
-                    connect: {
-                        id: e
-                    }
-                }
-            })
-        })
-
         const conference = await prisma.conference.findMany({
             where: {
                 id: parseInt(conference_id)
             }
         });
         let schedule_pos = await prisma.break.count() + await prisma.project.count();
-        await prisma.project.create({
+        const project = await prisma.project.findUnique({
+            where: {
+                id: req.body.project_id
+            },
+            include: {
+                users: true,
+            }
+        })
+        const members_of_project_now = []
+        project.users.forEach((e) => {
+            members_of_project_now.push(e.userId)
+        })
+        console.log(members_of_project_now)
+        members.forEach((e) => {
+            if (!members_of_project_now.includes(e)) {
+
+                users.push({
+                    user: {
+                        connect: {
+                            id: e
+                        }
+                    }
+                })
+            }
+        })
+
+        await prisma.project.update({
+            where: {
+                id: req.body.project_id,
+            },
             data: {
                 schedulePos: schedule_pos,
                 name: name,

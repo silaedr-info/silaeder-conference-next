@@ -15,6 +15,8 @@ import {
     Checkbox,
     NumberInput,
     Select,
+    Flex,
+    Loader
 } from '@mantine/core';
 import { useForm } from '@mantine/form'
 import {useEffect, useState} from "react";
@@ -25,16 +27,19 @@ const Index = () => {
     const [ users, setUsers ] = useState([]);
     const [ conferences, setConferences ] = useState([]);
     const [ tutors, setTutor ] = useState([]);
+    const [ authorized, setAuthorized ] = useState(false);
+    const [ userProjects, setUserProjects ] = useState([])
 
-    const form = useForm({
-        initialValues: {
 
-        }
-    });
+    const form = useForm();
 
     useEffect(() => {
         const fetchingConferences = async () => {
             const x = await fetch('/api/getAllConferences')
+            return x.json()
+        }
+        const fetchingProjects = async () => {
+            const x = await fetch('/api/getUserProjects')
             return x.json()
         }
         const fetchingTutors = async () => {
@@ -43,6 +48,10 @@ const Index = () => {
         }
         const fetching = async () => {
             const x = await fetch('/api/getAllUsers')
+            return x.json()
+        }
+        const checkLogin = async () => {
+            const x = await fetch('/api/check_login', {method: 'POST'})
             return x.json()
         }
         fetching().then((data) => {
@@ -54,8 +63,19 @@ const Index = () => {
         fetchingTutors().then((data) => {
             setTutor(data.data)
         })
-    }, []);
-    const [ currentProject, setCurrentProject ] = useState(0) // replace zero with first project of this user
+        fetchingProjects().then((data) => {
+            setUserProjects(data.projects)
+        })
+        checkLogin().then((data) => {
+            if (data.status === 'ok') {
+                setAuthorized(true)
+            } else {
+                window.location.href = '/auth'
+            }
+        })
+        setCurrentProject(userProjects[0]);
+    }, [userProjects]);
+    const [ currentProject, setCurrentProject ] = useState(-1)
     const [ disabled, setDisabled ] = useState(true);
 
     const addProject = (value) => {
@@ -68,9 +88,10 @@ const Index = () => {
             conference_id: value.conference,
             tutor_id: value.tutor,
             members: value.users,
+            project_id: currentProject
         }
         const x = fetch(
-            '/api/createProject', {
+            '/api/modifyProject', {
                 method: 'POST',
                 headers: {
                     "Content-Type": 'application/json'

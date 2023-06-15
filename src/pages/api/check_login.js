@@ -1,50 +1,48 @@
-import {PrismaClient} from '@prisma/client';
+import { PrismaClient } from '@prisma/client';
 import jwt from 'jsonwebtoken';
 import requestIp from 'request-ip';
-import nextBase64 from 'next-base64';
+import { getCookie } from 'cookies-next'
 
-const призма = new PrismaClient()
+const prisma = new PrismaClient()
 
 export default async function handler(req, res) {
     if (req.method === "POST") {
-        const {токен} = JSON.parse(req.body);
-        const айпи = requestIp.getClientIp(req);
+        const token = getCookie('auth_token', {req, res});
+        const ip = requestIp.getClientIp(req);
 
         try {
-            const расшифрованный_токен = JSON.parse(nextBase64.decode(токен.split('.')[1]));
+            const token_result = JSON.parse(atob(token.split('.')[1]));
 
-            console.log(расшифрованный_токен)
-
-            if (айпи === расшифрованный_токен.ip) {
-                const найденный_пользователь = await призма.user.findMany({
+            if (ip === token_result.ip) {
+                const user = await prisma.user.findMany({
                     where: {
-                        id: расшифрованный_токен.user_id
+                        id: token_result.user_id
                     }
                 });
 
-                if (найденный_пользователь.length !== 0) {
+                if (user.length !== 0) {
                     try {
-                        jwt.verify(токен, найденный_пользователь[0].password_hash);
+                        jwt.verify(token, user[0].password_hash);
 
                         res.status(200).json({
                             status: "ok"
                         });
                     } catch (e) {
                         res.status(200).json({
-                            error: "something is wrong"
+                            status: "error"
                         });
                     }
                 }
             } else {
                 res.status(200).json({
-                    error: "something is wrong"
+                    status: "error"
                 });
             }
 
 
         } catch (e) {
             res.status(200).json({
-                error: "something is wrong"
+                status: "error"
             });
         }
     }

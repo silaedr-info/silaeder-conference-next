@@ -75,7 +75,7 @@ export default function Auth() {
                             Забыли пароль?
                         </a>
                     </Anchor>
-                    <Button type="submit" fullWidth mt="xl" color={"indigo.4"}>
+                    <Button type="submit" fullWidth mt="xl" href={'/'} color={"indigo.4"}>
                         Войти
                     </Button>
                     <Button fullWidth mt="xl" variant="outline" color={"indigo.4"}>

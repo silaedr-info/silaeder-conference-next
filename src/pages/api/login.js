@@ -18,6 +18,7 @@ export default async function handler(req, res) {
 
         if ((user.length !== 0) && (user[0].password_hash === password_hash)) {
             const token = jwt.sign({ip: ip, user_id: user[0].id}, password_hash);
+            
 
             res.status(200).json({
                 token: token

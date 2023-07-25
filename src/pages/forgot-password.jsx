@@ -2,8 +2,11 @@ import {Button, Container, Paper, Text, TextInput, Title, PinInput, PasswordInpu
 import {useState} from "react";
 import emailjs from '@emailjs/browser';
 import {useForm} from '@mantine/form';
+import {useRouter} from "next/router";
 
 export default function ForgotPassword() {
+    const router = useRouter()
+    const Form2 = useForm()
     const [stage, setStage] = useState(0);
     const [code, setCode] = useState(0);
     const [inputCode, setInputCode] = useState("");
@@ -24,7 +27,8 @@ export default function ForgotPassword() {
             body: JSON.stringify({
                 email: email
             })
-        })
+        });
+        window.email = email
 
         let json = await res.json();
 
@@ -38,15 +42,24 @@ export default function ForgotPassword() {
 
         setStage(1);
     }
-
-    function check_code(event) {
+    async function check_code(event) {
         event.preventDefault();
 
         if (Number(inputCode) === code) {
             setStage(2);
+
         }
     }
-
+    const send_password = async (values) => {
+        await fetch('/api/forgot-password1', {
+            method: 'POST',
+            body: JSON.stringify({
+                stage: values.password,
+                email: window.email
+            })
+        });
+        await router.push('/');
+    }
     return (
         <Container size={420} my={40}>
             <Title
@@ -63,7 +76,7 @@ export default function ForgotPassword() {
                         </Text>
                         <TextInput label="Эл. почта" placeholder="jhondoe@example.com"
                                    required {...form.getInputProps('email')} />
-                        <Button type="submit" fullWidth mt="xl">
+                        <Button type="submit" fullWidth mt="xl" color={'indigo.4'}>
                             Далее
                         </Button>
                     </form>
@@ -76,14 +89,15 @@ export default function ForgotPassword() {
                             проверьте
                             вкладку &quot спам &quot
                         </Text>
-                        <PinInput type="number" sx={{paddingTop: rem(10)}} value={inputCode} onChange={(value) => {setInputCode(value)}} />
+                        <PinInput type="number" sx={{paddingTop: rem(10)}} value={inputCode} onChange={(value) => {setInputCode(value)}} required />
                         <Button fullWidth mt="xl" type="submit">
                             Далее
                         </Button>
                     </form>
                 }
                 {stage === 2 &&
-                    <form>
+                    <>
+                    <form onSubmit={form.onSubmit(send_password)}>
                         <Title order={2}>Новый пароль</Title>
                         <Text color="dimmed" size="sm" mt={5}>
                             Введите новый пароль
@@ -91,17 +105,19 @@ export default function ForgotPassword() {
                         <PasswordInput
                             placeholder="Password"
                             label="Новый пароль"
+                            source={'password'}
+                            {...form.getInputProps('password')}
                         />
                         <PasswordInput
                             placeholder="Password"
                             label="Повторите пароль"
+                            {...form.getInputProps('password2')}
                         />
-                        <Button fullWidth mt="xl" onClick={() => {
-                            setStage(2)
-                        }}>
+                        <Button fullWidth mt="xl" type={'submit'}>
                             Подтвердить
                         </Button>
                     </form>
+                    </>
                 }
             </Paper>
         </Container>

@@ -100,6 +100,32 @@ const Index = () => {
             }
         ).then()
     }
+    const handleSubmit = async (values) => {
+        const body = {
+            name: values.name,
+            description: values.description,
+            section: values.section,
+            grade: values.grade,
+            time_for_speech: 5,
+            conference_id: values.conference,
+            tutor_id: values.tutor,
+            members: values.users,
+            project_id: currentProject
+        }
+        console.log(body)
+        const new_project = await fetch('/api/createNewProject', {
+            method: 'post',
+            headers: {
+                "Content-Type": 'application/json'
+            },
+            body: JSON.stringify(body)
+        })
+        await change_state(false)
+    }
+    function handleClick() {
+        change_state(true)
+    }
+    const [new_project, change_state] = useState(false)
     return (
         <>
             {authorized ? <>
@@ -111,7 +137,8 @@ const Index = () => {
             </Title>
             <Space h="xl" />
             <Grid grow>
-                <Container sx={{width: '70%'}}>
+                { new_project &&
+                    <Container sx={{width: '70%'}}>
                     <Title align='center'>*Название проекта*</Title>
                     <Text color="dimmed" size="sm" align='center' mt={5}>Заполните информацию о проекте. В описании
                         напишите хотя бы 1 абзац, загрузите картинку проекта. <br />При вводе участиков, начните писать имя
@@ -120,7 +147,7 @@ const Index = () => {
                         При выборе научного руководителя, просто напишите его ФИО
                     </Text>
                     <Space h="xl" />
-                    <form onSubmit={form.onSubmit(addProject)}>
+                    <form onSubmit={form.onSubmit(handleSubmit)}>
                     <TextInput label="Название проекта" placeholder="Silaeder Conference" {...form.getInputProps('name')} required />
                     <Textarea
                         placeholder="Напишите хотя бы один абзац. Например: Наш проект предостовляет совокупность сервисов, позволяющих быстро и без задержек показывать презентации и организовывать расписание."
@@ -174,12 +201,13 @@ const Index = () => {
                         </FileButton>
                         <Button variant="default">Просмотреть презентацию</Button>
                     </Button.Group>
-                    <Button type="submit">Сохранить</Button>
+                    <Button type={ "submit" }>Сохранить</Button>
                     </form>
-
                 </Container>
+                }
                 <Divider orientation="vertical"/>
                 <Container sx={{width: '30%'}}>
+                    <Button mb={'5%'} color={'indigo.6'} fullWidth onClick={handleClick}> Создать новый проект </Button>
                     <SimpleGrid cols={1} spacing="xs" verticalSpacing="xs">
                         <ProjectCard name='Проект 1' description='проект 1.' projectId={0} section="математика" editFunc={(id) => {setCurrentProject(id)}} />
                         <ProjectCard name='Проект 2' description='проект 2.' projectId={1} section="биология" editFunc={(id) => {setCurrentProject(id)}} />

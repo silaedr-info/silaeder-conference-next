@@ -1,4 +1,5 @@
 import { PrismaClient } from '@prisma/client'
+import bcrypt from "bcrypt";
 
 const prisma = new PrismaClient()
 
@@ -10,18 +11,29 @@ function getRandomInt(min, max) {
 
 export default async function handler(req, res) {
     if (req.method === "POST") {
-        const {email} = JSON.parse(req.body);
+        const {email, stage} = JSON.parse(req.body);
 
-        const user = await prisma.user.findMany({
+        const user = await prisma.user.findFirst({
             where: {
                 email: email
             }
         });
 
-        if (user.length !== 0) {
-            const code = getRandomInt(1000, 9999);
+        if (user !== undefined) {
+            if (stage !== undefined) {
+                prisma.user.update({
+                    data: {
+                        password_hash: bcrypt.hash(stage, bcrypt.genSalt(10))
+                    },
+                    where: {
+                        email: email
+                    }
+                })
+            } else {
+                const code = getRandomInt(1000, 9999);
 
-            return res.status(200).json({code: code, name: user[0].name});
+                return res.status(200).json({code: code, name: user.name});
+            }
         } else {
             return res.status(200).json({error: "not found"});
         }

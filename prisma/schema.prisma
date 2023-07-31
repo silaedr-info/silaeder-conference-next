@@ -19,25 +19,26 @@ model User {
 }
 
 model Project {
-  id            Int               @id @default(autoincrement())
-  name          String
-  description   String
-  section       String
-  timeForSpeech Int
-  schedulePos   Int
-  active        Boolean
-  conferenceId  Int?
-  grade         Int
-  isHidden      Boolean           @default(false)
-  Conference    Conference?       @relation(fields: [conferenceId], references: [id])
-  users         ProjectsOnUsers[]
+  id              Int               @id @default(autoincrement())
+  name            String
+  description     String
+  section         String
+  timeForSpeech   Int
+  schedulePos     Int
+  active          Boolean
+  conferenceId    Int?
+  grade           Int
+  isHidden        Boolean           @default(false)
+  Conference      Conference?       @relation(fields: [conferenceId], references: [id])
+  users           ProjectsOnUsers[]
+  additionalUsers String            @default("")
 }
 
 model ProjectsOnUsers {
-  project   Project @relation(fields: [projectId], references: [id])
   projectId Int
-  user      User    @relation(fields: [userId], references: [id])
   userId    Int
+  project   Project @relation(fields: [projectId], references: [id])
+  user      User    @relation(fields: [userId], references: [id])
 
   @@id([projectId, userId])
 }

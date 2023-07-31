@@ -1,0 +1,9 @@
+version: '3'
+services:
+  pgadmin: 
+    image: 'dpage/pgadmin4'
+    environment: 
+      - PGADMIN_DEFAULT_EMAIL=alexandervolodin2020@gmail.com
+      - PGADMIN_DEFAULT_PASSWORD=rjbm2009
+    ports:
+      - 5432:80

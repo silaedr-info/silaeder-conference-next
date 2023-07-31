@@ -6,7 +6,6 @@ import {useRouter} from "next/router";
 
 export default function ForgotPassword() {
     const router = useRouter()
-    const Form2 = useForm()
     const [stage, setStage] = useState(0);
     const [code, setCode] = useState(0);
     const [inputCode, setInputCode] = useState("");
@@ -22,7 +21,7 @@ export default function ForgotPassword() {
     });
 
     async function send_email(email) {
-        let res = await fetch("/api/forgot-password", {
+        let res = await fetch("/api/sendEmail", {
             method: "post",
             body: JSON.stringify({
                 email: email
@@ -51,10 +50,10 @@ export default function ForgotPassword() {
         }
     }
     const send_password = async (values) => {
-        await fetch('/api/forgot-password1', {
+        await fetch('/api/sendPassword', {
             method: 'POST',
             body: JSON.stringify({
-                stage: values.password,
+                password: values.password,
                 email: window.email
             })
         });

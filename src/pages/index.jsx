@@ -39,8 +39,8 @@ const Index = () => {
             return x.json()
         }
         const fetchingProjects = async () => {
-            const x = await fetch('/api/getUserProjects')
-            return x.json()
+            const x = await fetch('/api/getUserProjects');
+            return await x.json()
         }
         const fetchingTutors = async () => {
             const x = await fetch('/api/getAllTutors')
@@ -64,7 +64,7 @@ const Index = () => {
             setTutor(data.data)
         })
         fetchingProjects().then((data) => {
-            setUserProjects(data.projects)
+            setUserProjects(data.projects.reverse())
         })
         checkLogin().then((data) => {
             if (data.status === 'ok') {
@@ -73,34 +73,21 @@ const Index = () => {
                 window.location.href = '/auth'
             }
         })
-        setCurrentProject(userProjects[0]);
+        // setCurrentProject(userProjects[0]);
     }, [userProjects]);
     const [ currentProject, setCurrentProject ] = useState(-1)
     const [ disabled, setDisabled ] = useState(true);
+    const [ projectInformation, setProjectInformation] = useState({name: 1, description: 1, section: 1})
 
-    const addProject = (value) => {
-        const body = {
-            name: value.name,
-            description: value.description,
-            section: value.section,
-            grade: value.grade,
-            time_for_speech: 5,
-            conference_id: value.conference,
-            tutor_id: value.tutor,
-            members: value.users,
-            project_id: currentProject
+    async function addProject(values, wasProject) {
+        if (wasProject === false) {
+            const res = await fetch('/api/createEmptyProject', {
+                method: "post"
+            });
+            const json = await res.json();
+            await setCurrentProject(json.project_id);
+            console.log(currentProject)
         }
-        const x = fetch(
-            '/api/modifyProject', {
-                method: 'POST',
-                headers: {
-                    "Content-Type": 'application/json'
-                },
-                body: JSON.stringify(body)
-            }
-        ).then()
-    }
-    const handleSubmit = async (values) => {
         const body = {
             name: values.name,
             description: values.description,
@@ -110,20 +97,39 @@ const Index = () => {
             conference_id: values.conference,
             tutor_id: values.tutor,
             members: values.users,
-            project_id: currentProject
+            project_id: currentProject,
+            additional_users: values.additional_users,
         }
-        console.log(body)
-        const new_project = await fetch('/api/createNewProject', {
-            method: 'post',
-            headers: {
-                "Content-Type": 'application/json'
-            },
-            body: JSON.stringify(body)
-        })
-        await change_state(false)
+        const x = await fetch(
+            '/api/modifyProject', {
+                method: 'POST',
+                headers: {
+                    "Content-Type": 'application/json'
+                },
+                body: JSON.stringify(body)
+            }
+        )
+        change_state(false)
     }
     function handleClick() {
         change_state(true)
+        changePoint(false)
+    }
+    const [wasProject, changePoint] = useState(false)
+    async function redact(id) {
+        change_state(true);
+        setCurrentProject(id);
+        changePoint(true);
+        const res = await fetch('/api/getProjectById', {
+            method: 'post',
+            body: JSON.stringify({
+                id: id
+            })
+        })
+        const json = await res.json()
+        await setProjectInformation(json)
+        await console.log(projectInformation)
+        // return res.json()
     }
     const [new_project, change_state] = useState(false)
     return (
@@ -147,15 +153,15 @@ const Index = () => {
                         При выборе научного руководителя, просто напишите его ФИО
                     </Text>
                     <Space h="xl" />
-                    <form onSubmit={form.onSubmit(handleSubmit)}>
-                    <TextInput label="Название проекта" placeholder="Silaeder Conference" {...form.getInputProps('name')} required />
+                    <form onSubmit={form.onSubmit((values) => addProject(values, wasProject))}>
+                    <TextInput label="Название проекта" placeholder="Silaeder Conference" {...form.getInputProps('name')} required/>
                     <Textarea
                         placeholder="Напишите хотя бы один абзац. Например: Наш проект предостовляет совокупность сервисов, позволяющих быстро и без задержек показывать презентации и организовывать расписание."
                         label="Описание"
                         withAsterisk
                         {...form.getInputProps('description')}
                     />
-                    <Select data={tutors} label="Научный руководитель" placeholder="Старунова Ольга Александровна" {...form.getInputProps('tutor')} required />
+                    <Select data={tutors} label="Научный руководитель" value={projectInformation.tutor} placeholder="Старунова Ольга Александровна" {...form.getInputProps('tutor')} required />
                     <Autocomplete
                         label="Секция"
                         placeholder="Начните писать"
@@ -166,13 +172,15 @@ const Index = () => {
                     <Select
                         label="Конференция"
                         placeholder="Выберите конференцию, на которую вы хотите загрузить проект"
+                        value={projectInformation.conference}
                         data={conferences}
                         {...form.getInputProps('conference')}
                         required
                     />
                     <NumberInput label="Класс участников"
-                               placeholder="Запишите среднее арифметическое классов участников, округлённое по правилам математического округления."
+                               placeholder="Запишите средний класс участников"
                                {...form.getInputProps('grade')}
+                               value={projectInformation.grade}
                                required />
                     <MultiSelect
                         data={users}
@@ -183,8 +191,8 @@ const Index = () => {
                         defaultValue={['US', 'FI']}
                         placeholder="Начните писать ФИО"
                         label="Участники"
+                        value={projectInformation.users}
                         {...form.getInputProps('users')}
-                        required
                     />
                     <Space h='lg' />
                     <Checkbox
@@ -193,10 +201,11 @@ const Index = () => {
                     />
                     <TextInput label="ФИО" placeholder="Напишите ФИО недостающих через запятую" disabled={disabled}
                                {...form.getInputProps('additional_users')}
+                               value={projectInformation.additional_users}
                     />
                     <Space h="lg" />
                     <Button.Group>
-                        <FileButton accept="application/vnd.ms-powerpoint,application/pdf" onChange={(file) => {}}>
+                        <FileButton accept="application/vnd.ms-powerpoint,application/pdf" {...form.getInputProps('presentation')} onChange={(file) => {} } required>
                             {(props) => <Button     variant="default" {...props}>Загрузить презентацию</Button>}
                         </FileButton>
                         <Button variant="default">Просмотреть презентацию</Button>
@@ -209,9 +218,9 @@ const Index = () => {
                 <Container sx={{width: '30%'}}>
                     <Button mb={'5%'} color={'indigo.6'} fullWidth onClick={handleClick}> Создать новый проект </Button>
                     <SimpleGrid cols={1} spacing="xs" verticalSpacing="xs">
-                        <ProjectCard name='Проект 1' description='проект 1.' projectId={0} section="математика" editFunc={(id) => {setCurrentProject(id)}} />
-                        <ProjectCard name='Проект 2' description='проект 2.' projectId={1} section="биология" editFunc={(id) => {setCurrentProject(id)}} />
-                        <ProjectCard name='Проект 3' description='проект 3.' projectId={2} section="программирование" editFunc={(id) => {setCurrentProject(id)}} />
+                        { userProjects.map(project => (
+                            <ProjectCard key={project.id} name={project.name} description={project.description} projectId={project.id} section={project.section} editFunc={(id) => {redact(id).then()}} />
+                        ))}
                     </SimpleGrid>
                 </Container>
             </Grid>

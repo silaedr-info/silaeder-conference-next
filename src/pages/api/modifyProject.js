@@ -36,7 +36,6 @@ export default async function CreateProject(req, res) {
         project.users.forEach((e) => {
             members_of_project_now.push(e.userId)
         })
-        console.log(members_of_project_now)
         members.forEach((e) => {
             if (!members_of_project_now.includes(e)) {
 
@@ -62,6 +61,7 @@ export default async function CreateProject(req, res) {
                 timeForSpeech: time_for_speech,
                 grade: grade,
                 active: true,
+                additionalUsers: req.body.additional_users,
                 users:
                     {
                         create: users

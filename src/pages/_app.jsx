@@ -15,7 +15,7 @@ export default function App(props) {
         <HeaderResponsive links={[
             {label: "Авторизация", link: '/auth'},
             {label: "Витрина проектов", link: '/showcase'},
-            {label: "Расписание конференции", link: '/schedule'},
+            {label: "Расписание конференции", link: '/schedules'},
         ]} />
     );
     const footer = (

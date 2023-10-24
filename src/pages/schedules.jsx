@@ -1,7 +1,7 @@
 import React, {useEffect, useState} from "react";
 import {Button, Center, Text} from '@mantine/core'
 import {useRouter} from "next/router";
-import ScheduleCard from '@/scheduleCard'
+import {ScheduleCard} from '@/scheduleCard'
 const Schedules = () => {
     const [ conferences, setConferences ] = useState([]);
     const [ conference, setConference ] = useState({});
@@ -40,7 +40,7 @@ const Schedules = () => {
                     Создать новое расписание конференции
                 </Button>
             </Center>
-            <ScheduleCard date={conference.start}/>
+            <ScheduleCard date={conference.start} />
         </>
     )
 };

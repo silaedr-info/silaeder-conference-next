@@ -143,7 +143,7 @@ const Index = () => {
                 ).then()
             })
         }
-        const x = await fetch(
+        await fetch(
             '/api/modifyProject', {
                 method: 'POST',
                 headers: {

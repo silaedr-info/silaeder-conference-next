@@ -37,7 +37,11 @@ async function getTimeOfProjectStart(conference_id, schedule_pos) {
 
     startTime.setMinutes(startTime.getMinutes()+time);
 
-    return startTime.getHours()+":"+startTime.getMinutes();
+    if (String(startTime.getMinutes()).length === 1) {
+        return startTime.getHours()+":0"+startTime.getMinutes();
+    } else {
+        return startTime.getHours()+":"+startTime.getMinutes();
+    }
 }
 
 async function getParticipantsOfProjectByID(id) {
@@ -64,7 +68,7 @@ async function getParticipantsOfProjectByID(id) {
             if (output === undefined) {
                 output = el1.name
             } else {
-                output += " " + el1.name
+                output += ", " + el1.name
             }
         })
     }
@@ -102,14 +106,16 @@ export default async function getScheduleForConferenceID(req, res) {
                 run = false;
                 
             } else {
+                const data4 = await getTimeOfProjectStart(id, i);
+
                 output.push({
-                    time: data1[0].time,
+                    time: data4,
                     participants: "Все",
                     name_of_project: "Перерыв"
                 })
             }
         } else {
-            const data2 = await getTimeOfProjectStart(id, data[0].id);
+            const data2 = await getTimeOfProjectStart(id, i);
             const data3 = await getParticipantsOfProjectByID(data[0].id);
             output.push({
                 time: data2,

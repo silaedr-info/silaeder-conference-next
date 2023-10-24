@@ -117,7 +117,8 @@ export function HeaderResponsive({ links }) {
             <Container className={classes.inner} fluid>
                 <Group>
                     <Burger opened={opened} onClick={toggle} className={classes.burger} size="sm" />
-                    <h3>Silaeder Conference</h3>
+
+                    <a href='/' style={{ textDecoration: 'none', color: '#C1C2C5' }}><h3>Silaeder Conference</h3></a>
                 </Group>
 
 

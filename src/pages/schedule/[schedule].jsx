@@ -11,33 +11,8 @@ const start_data = [
     {
         time: '10:00',
         name_of_project: 'Первый проект',
-        participants: 'Первый Первопроектный Участник, Второй Первопроектный Участник',
-        comments: 'Прекрасный проект',
-    },
-    {
-        time: '10:10',
-        name_of_project: 'Второй проект',
-        participants: 'Первый Второпроектный Участник, Второй Второпроектный Участник',
-        comments: 'Хороший проект',
-    },
-    {
-        time: '10:20',
-        name_of_project: 'Третий проект',
-        participants: 'Первый Третьепроектный Участник, Второй Третьепроектный Участник',
-        comments: 'Нормальный проект',
-    },
-    {
-        time: '10:30',
-        name_of_project: 'Четвертый проект',
-        participants: 'Первый Четверопроектный Участник, Второй Четверопроектный Участник',
-        comments: 'Плохой проект',
-    },
-    {
-        time: '10:40',
-        name_of_project: 'Пятый проект',
-        participants: 'Первый Пятьепроектный Участник, Второй Пятьепроектный Участник, Третий Пятьепроектный Участник, Четвёртый Пятьепроектный Участник',
-        comments: 'Ужасный проект',
-    },
+        participants: 'Первый Первопроектный Участник, Второй Первопроектный Участник'
+    }
 ];
 
 
@@ -60,11 +35,6 @@ const Schedule = () => {
                 accessorKey: 'participants',
                 header: 'Участники',
                 size: 200
-            },
-            {
-                accessorKey: 'comments',
-                header: 'Комментарии жюри',
-                size: 250
             }
         ],
         [],
@@ -78,6 +48,7 @@ const Schedule = () => {
         router.push('/auth');
     };
     const [data, setData] = useState(start_data);
+    const [name_of_conference, setName_of_conference] = useState("");
     if (typeof window !== 'undefined') {
         const tags = document.getElementsByTagName('td');
         for (let i = 0; i < tags.length; i++) {
@@ -86,6 +57,35 @@ const Schedule = () => {
             }
         }
     }
+
+    useEffect(() => {
+        fetch('/api/getScheduleForConferenceID', {
+            method: 'POST',
+            body: JSON.stringify({ id: router.query.schedule }),
+            headers: {
+                'Content-Type': 'application/json'
+            }
+        })
+        .then(response => response.json())
+        .then(data => {
+            console.log(data);
+            setData(data.output)
+        })
+
+        fetch('/api/getConferenceNameByID', {
+            method: 'POST',
+            body: JSON.stringify({ id: router.query.schedule }),
+            headers: {
+                'Content-Type': 'application/json'
+            }
+        })
+        .then(response => response.json())
+        .then(data => {
+            console.log(data);
+            setName_of_conference(data.name)
+        })
+    }, []);
+
     return (
         <>
             <Title
@@ -93,7 +93,7 @@ const Schedule = () => {
                 sx={(theme) => ({ fontFamily: `Greycliff CF, ${theme.fontFamily}`, fontWeight: 900 })}
                 m={'1%'}
             >
-                Расписание конференции *название конференции*
+                Расписание конференции {name_of_conference}
             </Title>
             <Box>
             <MantineReactTable

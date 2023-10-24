@@ -5,8 +5,23 @@ import {useForm} from "@mantine/form";
 const Make_conference = () => {
     const form = useForm()
     const [dateTime, setDateTime] = useState(null);
-    const handleSubmit = () => {
-        console.log(form.values)
+    const handleSubmit = async (event) => {
+        event.preventDefault();
+
+        
+        const response = await fetch('/api/addConference', {
+            method: 'POST',
+            headers: {
+                'Content-Type': 'application/json'
+            },
+            body: JSON.stringify(form.values)
+        });
+        
+        if (response.ok) {
+            console.log('Conference added successfully');
+        } else {
+            console.error('Failed to add conference');
+        }
     }
     return (
         <>

@@ -37,7 +37,7 @@ export default async function getTimeOfProjectStart(req, res) {
 
     const startTime = new Date(conference[0].start);
 
-    startTime.setMinutes(startTime.getMinutes()+time)
+    startTime.setMinutes(startTime.getMinutes()+time);
 
-    res.status(200).json({ time: startTime.getUTCHours()+":"+startTime.getUTCMinutes() })
+    res.status(200).json({ time: startTime.getHours()+":"+startTime.getMinutes() });
 }

@@ -204,30 +204,11 @@ const Index = () => {
         } catch (e) {}
     });
     const previewsPresentation = presentation.map((file, index) => {
-        if (file !== presentationFile) {
-            setPresentationFile(file)
-            const presentationUrl = URL.createObjectURL(file);
-            setPrUrl(presentationUrl)
-        }
-        if (path.extname(prUrl) === '.pdf') {
-            return (
-                <>
-                    <Document key={index} file={prUrl}>
-                        <Page scale={scale} pageNumber={1}/>
-                    </Document>
-                </>
-            )
-        } else {
-            try {
-                return (
-                    <>
-                        <div className="webviewer" ref={viewer} style={{height: "200px"}}></div>
-                    </>
-                )
-            } catch (e) {
-                
-            }
-        }
+        return (
+            <>
+                <Button color={'indigo.8'}>Посмотреть презентацию</Button>
+            </>
+        )
     });
     return (
         <>

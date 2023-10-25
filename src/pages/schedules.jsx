@@ -19,7 +19,7 @@ const Schedules = () => {
             const x = await fetch('/api/getConferenceById', {
                 method: 'post',
                 body: JSON.stringify({
-                    id: 1
+                    id: 12
                 })
             });
             return x.json();

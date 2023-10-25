@@ -8,9 +8,15 @@ export default async function saveProjectsAndBreaks(req, res) {
         const idx = objects.indexOf(el);
 
         if (el.type === "project") {
+            const prj = await prisma.project.findMany({
+                where: {
+                    schedulePos: el.schedulePos
+                }
+            });
+
             await prisma.project.update({
                 where: {
-                    id: el.id
+                    id: prj[0].schedulePos
                 },
 
                 data: {
@@ -22,7 +28,7 @@ export default async function saveProjectsAndBreaks(req, res) {
         if (el.type === "break") {
             await prisma.break.update({
                 where: {
-                    id: el.id
+                    id: el.schedulePos
                 },
 
                 data: {

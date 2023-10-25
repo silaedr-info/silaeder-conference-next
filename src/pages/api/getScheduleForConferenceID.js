@@ -94,6 +94,7 @@ export default async function getScheduleForConferenceID(req, res) {
                 schedulePos: i
             }
         });
+        console.log(data);
         if (data.length === 0) {
             const data1 = await prisma.break.findMany({
                 where: {
@@ -125,6 +126,8 @@ export default async function getScheduleForConferenceID(req, res) {
 
         i++;
     }
+
+    console.log(output);
 
     res.status(200).json({output: output})
 }

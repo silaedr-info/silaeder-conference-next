@@ -141,18 +141,57 @@ const Schedule = () => {
 
                 })}
                 mantineRowDragHandleProps={({ table }) => ({
-                     onDragEnd: () => {
-                         const { draggingRow, hoveredRow } = table.getState();
-                         if (hoveredRow && draggingRow) {
-                             data.splice(
-                                 hoveredRow.index,
-                                 0,
-                                 data.splice(draggingRow.index, 1)[0],
-                             );
-                             setData([...data]);
-                         }
-                     },
-                 })}
+                    onDragEnd: () => {
+                        const { draggingRow, hoveredRow } = table.getState();
+                        if (hoveredRow && draggingRow) {
+                            data.splice(
+                                hoveredRow.index,
+                                0,
+                                data.splice(draggingRow.index, 1)[0],
+                            );
+                            setData([...data]);
+                            
+                            let output = [];
+
+                            data.forEach((el, idx) => {
+                                if (el.name_of_project === "Перерыв") {
+                                    output.push({
+                                        type: "break",
+                                        schedulePos: idx+1
+                                    })
+                                } else {
+                                    output.push({
+                                        type: "project",
+                                        schedulePos: idx+1
+                                    })
+                                }
+                            })
+
+                            fetch('/api/saveProjectsAndBreaks', {
+                                method: 'POST',
+                                body: JSON.stringify({ objects1: output }),
+                                headers: {
+                                    'Content-Type': 'application/json'
+                                }
+                            }).then((data) => {
+                                fetch('/api/getScheduleForConferenceID', {
+                                    method: 'POST',
+                                    body: JSON.stringify({ id: Number(router.query.schedule) }),
+                                    headers: {
+                                        'Content-Type': 'application/json'
+                                    }
+                                })
+                                .then(response => response.json())
+                                .then(data => {
+                                    console.log(data);
+                                    setData(data.output)
+                                }).catch((e) => {
+                                    router.push("/123/123/123")
+                                })
+                            });
+                        }
+                    },
+                })}
             />
             </Box>
         </>

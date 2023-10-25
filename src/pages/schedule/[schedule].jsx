@@ -9,11 +9,7 @@ import {
 import { redirect } from 'next/dist/server/api-utils';
 
 const start_data = [
-    {
-        time: '10:00',
-        name_of_project: 'Первый проект',
-        participants: 'Первый Первопроектный Участник, Второй Первопроектный Участник'
-    }
+
 ];
 
 const Schedule = () => {
@@ -62,8 +58,6 @@ const Schedule = () => {
         if(!router.isReady) return;
         const query = router.query;
 
-        console.log(query);
-
         fetch('/api/getScheduleForConferenceID', {
             method: 'POST',
             body: JSON.stringify({ id: Number(router.query.schedule) }),
@@ -73,7 +67,6 @@ const Schedule = () => {
         })
         .then(response => response.json())
         .then(data => {
-            console.log(data);
             setData(data.output)
         }).catch((e) => {
             router.push("/123/123/123")
@@ -88,7 +81,6 @@ const Schedule = () => {
         })
         .then(response => response.json())
         .then(data => {
-            console.log(data);
             setName_of_conference(data.name)
         }).catch((e) => {
             router.push("/123/123/123")

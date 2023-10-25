@@ -4,7 +4,6 @@ import {useRouter} from "next/router";
 import {ScheduleCard} from '@/scheduleCard'
 const Schedules = () => {
     const [ conferences, setConferences ] = useState([]);
-    const [ conference, setConference ] = useState({});
     useEffect(() => {
         const fetchingConferences = async () => {
             const x = await fetch('/api/getAllConferences')
@@ -14,21 +13,7 @@ const Schedules = () => {
             setConferences(data.data)
             // conferences.sort()
         })
-
-        const fetchingConference = async () => {
-            const x = await fetch('/api/getConferenceById', {
-                method: 'post',
-                body: JSON.stringify({
-                    id: 12
-                })
-            });
-            return x.json();
-        }
-        fetchingConference().then((data) => {
-            setConference(data.conference)
-            console.log(conference)
-        })
-    }, [conferences, conference])
+    }, [conferences])
     const router = useRouter()
     const handleClick = () => {
         router.push('/make_conference')
@@ -40,7 +25,9 @@ const Schedules = () => {
                     Создать новое расписание конференции
                 </Button>
             </Center>
-            <ScheduleCard date={conference.start} />
+            { conferences.map((conference) => (<ScheduleCard key={conference.id} conference={conference} />))
+
+            }
         </>
     )
 };

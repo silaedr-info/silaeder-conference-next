@@ -1,23 +1,30 @@
-import { Calendar } from '@mantine/dates';
-import {Button, Card, Indicator, Text, Title} from "@mantine/core";
+import {Calendar, DateTimePicker} from '@mantine/dates';
+import {Button, Card, Center, Indicator, Text, Title} from "@mantine/core";
 import {useRouter} from "next/router";
-export function ScheduleCard({date}) {
-    console.log(date)
-    const calendarDate = new Date(date)
-    console.log(calendarDate)
+export function ScheduleCard({conference}) {
+    const calendarDate = new Date(conference.value[1])
     const router = useRouter()
 
 
-    const handleClick = () => {
-        router.push('/schedule/1')
+    const handleClick = (id) => {
+        router.push(`/schedule/${id}`)
     }
 
 
     return (
-            <Card mt={'1%'} mx={'auto'} shadow="sm" padding="lg" radius="md" sx={{width: "50%"}} withBorder>
-                <Title>Conference 1</Title>
-                <Text>293939</Text>
-                <Button onClick={handleClick}>Go to the conference</Button>
+            <Card mt={'1%'} mx={'auto'} shadow="sm" padding="lg" radius="md" sx={{width: "35%"}} withBorder>
+                <Title mx={'auto'}>{conference.label}</Title>
+                <DateTimePicker mt={'1%'}
+                                disabled
+                                value={calendarDate}
+                                label="Дата конференции"
+                                w={'35%'}
+                                mx="auto"
+                                required
+                />
+                <Center mt={'3%'}>
+                    <Button color={'indigo.8'} onClick={() => handleClick(conference.value[0])}>Перейти к конференции</Button>
+                </Center>
             </Card>
     )
 }

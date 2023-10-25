@@ -6,6 +6,7 @@ import {
     IconEye,
     IconPlayerPlay, IconPlus
 } from '@tabler/icons-react';
+import { redirect } from 'next/dist/server/api-utils';
 
 const start_data = [
     {
@@ -14,7 +15,6 @@ const start_data = [
         participants: 'Первый Первопроектный Участник, Второй Первопроектный Участник'
     }
 ];
-
 
 const Schedule = () => {
 
@@ -59,9 +59,14 @@ const Schedule = () => {
     }
 
     useEffect(() => {
+        if(!router.isReady) return;
+        const query = router.query;
+
+        console.log(query);
+
         fetch('/api/getScheduleForConferenceID', {
             method: 'POST',
-            body: JSON.stringify({ id: router.query.schedule }),
+            body: JSON.stringify({ id: Number(router.query.schedule) }),
             headers: {
                 'Content-Type': 'application/json'
             }
@@ -70,11 +75,13 @@ const Schedule = () => {
         .then(data => {
             console.log(data);
             setData(data.output)
+        }).catch((e) => {
+            router.push("/123/123/123")
         })
 
         fetch('/api/getConferenceNameByID', {
             method: 'POST',
-            body: JSON.stringify({ id: router.query.schedule }),
+            body: JSON.stringify({ id: Number(router.query.schedule) }),
             headers: {
                 'Content-Type': 'application/json'
             }
@@ -83,8 +90,10 @@ const Schedule = () => {
         .then(data => {
             console.log(data);
             setName_of_conference(data.name)
+        }).catch((e) => {
+            router.push("/123/123/123")
         })
-    }, []);
+    }, [router.isReady]);
 
     return (
         <>
